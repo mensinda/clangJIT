@@ -25,6 +25,7 @@
  */
 
 #include "CodeWriterX86.hpp"
+#include "Redirector.hpp"
 #include <string.h>
 
 namespace funcRedirect {
@@ -78,7 +79,7 @@ void CodeWriterX86::patchFunctionLong(void *oldFN, void *dest) {
 }
 
 void CodeWriterX86::patchFunction(void *oldFN, void *dest) {
-  if (checkNeedLongJmp(oldFN, dest)) {
+  if (checkNeedLongJmp(oldFN, dest) || Redirector::config.forceLongJump) {
     backup(oldFN, 14);
     patchFunctionLong(oldFN, dest);
   } else {

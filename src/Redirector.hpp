@@ -33,6 +33,14 @@
 namespace funcRedirect {
 
 class Redirector {
+ public:
+  class __config {
+   public:
+    bool forceLongJump = false;
+  };
+
+  static __config config;
+
  private:
   std::vector<std::unique_ptr<FuncRedirect>> redirects;
 
@@ -45,6 +53,8 @@ class Redirector {
 
   Redirector &operator=(const Redirector &) = delete; // No copies
   Redirector &operator=(Redirector &&) = delete;      // No copies
+
+  void undoAll();
 
   template <class RET, class CLASS1, class CLASS2, class... ARGS>
   void redirect(RET (CLASS1::*oldFN)(ARGS... _arg), RET (CLASS2::*dest)(ARGS... _arg)) {

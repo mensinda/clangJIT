@@ -29,4 +29,8 @@
 namespace funcRedirect {
 
 Redirector::~Redirector() {}
+
+void Redirector::undoAll() { redirects.clear(); }
+
+Redirector::__config Redirector::config = Redirector::__config();
 }

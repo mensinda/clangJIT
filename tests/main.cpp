@@ -54,15 +54,55 @@ TEST_CASE("std::to_string sanity check") {
   REQUIRE(std::to_string(95) == "95");
 }
 
-TEST_CASE("Function redirection") {
+TEST_CASE("Basic function redirection") {
   AAA a;
-  BBB b;
 
   {
     REQUIRE(a.func1(1, 100) == "FUNC1 1 100");
     REQUIRE(func3(100) == 100);
 
     Redirector r;
+    r.redirect(&AAA::func1, &BBB::func2);
+    r.redirect(&func3, &func4);
+
+    REQUIRE(a.func1(1, 100) == "FUNC2 101 95");
+    REQUIRE(func3(100) == -100);
+  }
+
+  // Destroying r restores the function
+  REQUIRE(a.func1(1, 100) == "FUNC1 1 100");
+  REQUIRE(func3(100) == 100);
+}
+
+TEST_CASE("Function redirection with undoAll") {
+  AAA a;
+
+  REQUIRE(a.func1(1, 100) == "FUNC1 1 100");
+  REQUIRE(func3(100) == 100);
+
+  Redirector r;
+  r.redirect(&AAA::func1, &BBB::func2);
+  r.redirect(&func3, &func4);
+
+  REQUIRE(a.func1(1, 100) == "FUNC2 101 95");
+  REQUIRE(func3(100) == -100);
+
+  r.undoAll();
+
+  REQUIRE(a.func1(1, 100) == "FUNC1 1 100");
+  REQUIRE(func3(100) == 100);
+}
+
+
+TEST_CASE("Basic function redirection with long jumps") {
+  AAA a;
+
+  {
+    REQUIRE(a.func1(1, 100) == "FUNC1 1 100");
+    REQUIRE(func3(100) == 100);
+
+    Redirector r;
+    Redirector::config.forceLongJump = true;
     r.redirect(&AAA::func1, &BBB::func2);
     r.redirect(&func3, &func4);
 
