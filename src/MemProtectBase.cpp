@@ -28,8 +28,9 @@
 
 namespace funcRedirect {
 
+MemProtectBase::~MemProtectBase() {}
+
 void *MemProtectBase::alignAddr(void *addr) {
   return reinterpret_cast<void *>(reinterpret_cast<size_t>(addr) & (~(getPageSize() - 1)));
 }
-
 }

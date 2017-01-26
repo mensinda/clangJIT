@@ -24,31 +24,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "FuncRedirect.hpp"
+#include "Redirector.hpp"
 #include <iostream>
 
 using namespace funcRedirect;
 
+int func3(int i);
+int func4(int i);
+
 class AAA {
  public:
   std::string func1(int i, std::string f) { return "FUNC1 " + f + std::to_string(i); }
-  std::string func2(int i, std::string f) { return "FUNC2 " + f + std::to_string(i); }
+  std::string func2(int i, std::string f) { return "FUNC2 " + f + std::to_string(i + 100); }
 };
+
+int func3(int i) { return i; }
+int func4(int i) { return (-1) * i; }
 
 int main(int argc, char *argv[]) {
   std::cout << "Hello World " << argc << " " << argv[0] << std::endl;
 
-  AAA a;
+  AAA        a;
+  Redirector r;
   std::cout << a.func1(1, " normal ") << std::endl;
+  r.redirect(&AAA::func1, &AAA::func2);
+  std::cout << a.func1(1, " patched? ") << std::endl;
 
-  FuncRedirect fr;
-
-  std::string (AAA::*pf1)(int, std::string) = &AAA::func1;
-  std::string (AAA::*pf2)(int, std::string) = &AAA::func2;
-
-  fr.redirect((void *&)(pf1), (void *&)(pf2));
-
-  std::cout << a.func1(2, " patched? ") << std::endl;
+  std::cout << func3(100) << std::endl;
+  r.redirect(&func3, &func4);
+  std::cout << func3(100) << std::endl;
 
   return 0;
 }

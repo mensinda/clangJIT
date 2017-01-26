@@ -33,13 +33,12 @@ namespace funcRedirect {
 
 class MemProtectBase {
  public:
-  MemProtectBase()          = default;
-  virtual ~MemProtectBase() = default;
+  MemProtectBase() = default;
+  virtual ~MemProtectBase();
 
   virtual size_t getPageSize() = 0;
   virtual void unprotectPage(void *addr, size_t len) = 0;
 
   void *alignAddr(void *addr);
 };
-
 }

@@ -32,8 +32,8 @@ namespace funcRedirect {
 
 class MemProtectPosix : public MemProtectBase {
  public:
-  MemProtectPosix()          = default;
-  virtual ~MemProtectPosix() = default;
+  MemProtectPosix() = default;
+  virtual ~MemProtectPosix();
 
   size_t getPageSize() override;
   void unprotectPage(void *addr, size_t len) override;

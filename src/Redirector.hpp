@@ -26,29 +26,54 @@
 
 #pragma once
 
-#include "defines.hpp"
-#include "CodeWriterBase.hpp"
-#include "MemProtectBase.hpp"
+#include "FuncRedirect.hpp"
+#include <memory>
+#include <vector>
 
 namespace funcRedirect {
 
-class FuncRedirect {
+class Redirector {
  private:
-  CodeWriterBase *writer = nullptr;
-  MemProtectBase *memPro = nullptr;
-
-  void redirect(void *oldFN, void *dest);
+  std::vector<std::unique_ptr<FuncRedirect>> redirects;
 
  public:
-  FuncRedirect() = delete;
-  virtual ~FuncRedirect();
+  Redirector() = default;
+  virtual ~Redirector();
 
-  FuncRedirect(void *oldFN, void *dest);
+  Redirector(const Redirector &) = delete; // No copies
+  Redirector(Redirector &&)      = delete; // No copies
 
-  FuncRedirect(const FuncRedirect &) = delete; // No copies
-  FuncRedirect(FuncRedirect &&)      = delete; // No copies
+  Redirector &operator=(const Redirector &) = delete; // No copies
+  Redirector &operator=(Redirector &&) = delete;      // No copies
 
-  FuncRedirect &operator=(const FuncRedirect &) = delete; // No copies
-  FuncRedirect &operator=(FuncRedirect &&) = delete;      // No copies
+  template <class RET, class CLASS1, class CLASS2, class... ARGS>
+  void redirect(RET (CLASS1::*oldFN)(ARGS... _arg), RET (CLASS2::*dest)(ARGS... _arg)) {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundefined-reinterpret-cast"
+
+    void *RAWoldFN = reinterpret_cast<void *&>(oldFN);
+    void *RAWdest  = reinterpret_cast<void *&>(dest);
+
+#pragma clang diagnostic pop
+
+    auto redir = std::make_unique<FuncRedirect>(RAWoldFN, RAWdest);
+    redirects.emplace_back(std::move(redir));
+  }
+
+  template <class RET, class... ARGS>
+  void redirect(RET (*oldFN)(ARGS... _arg), RET (*dest)(ARGS... _arg)) {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundefined-reinterpret-cast"
+
+    void *RAWoldFN = reinterpret_cast<void *&>(oldFN);
+    void *RAWdest  = reinterpret_cast<void *&>(dest);
+
+#pragma clang diagnostic pop
+
+    auto redir = std::make_unique<FuncRedirect>(RAWoldFN, RAWdest);
+    redirects.emplace_back(std::move(redir));
+  }
 };
 }

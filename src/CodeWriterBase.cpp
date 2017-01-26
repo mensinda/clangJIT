@@ -24,31 +24,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
-
-#include "defines.hpp"
 #include "CodeWriterBase.hpp"
-#include "MemProtectBase.hpp"
 
 namespace funcRedirect {
 
-class FuncRedirect {
- private:
-  CodeWriterBase *writer = nullptr;
-  MemProtectBase *memPro = nullptr;
-
-  void redirect(void *oldFN, void *dest);
-
- public:
-  FuncRedirect() = delete;
-  virtual ~FuncRedirect();
-
-  FuncRedirect(void *oldFN, void *dest);
-
-  FuncRedirect(const FuncRedirect &) = delete; // No copies
-  FuncRedirect(FuncRedirect &&)      = delete; // No copies
-
-  FuncRedirect &operator=(const FuncRedirect &) = delete; // No copies
-  FuncRedirect &operator=(FuncRedirect &&) = delete;      // No copies
-};
+CodeWriterBase::~CodeWriterBase() {}
 }

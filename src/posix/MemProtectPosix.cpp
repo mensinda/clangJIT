@@ -34,7 +34,9 @@
 
 namespace funcRedirect {
 
-size_t MemProtectPosix::getPageSize() { return getpagesize(); }
+MemProtectPosix::~MemProtectPosix() {}
+
+size_t MemProtectPosix::getPageSize() { return static_cast<size_t>(getpagesize()); }
 
 void MemProtectPosix::unprotectPage(void *addr, size_t len) {
   int err = mprotect(alignAddr(addr), len, PROT_READ | PROT_WRITE | PROT_EXEC);

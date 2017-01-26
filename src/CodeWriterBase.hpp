@@ -32,8 +32,8 @@ namespace funcRedirect {
 
 class CodeWriterBase {
  public:
-  CodeWriterBase()          = default;
-  virtual ~CodeWriterBase() = default;
+  CodeWriterBase() = default;
+  virtual ~CodeWriterBase();
 
   virtual void patchFunction(void *oldFN, void *dest) = 0;
 };

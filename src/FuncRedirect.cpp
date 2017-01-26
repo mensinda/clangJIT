@@ -25,7 +25,6 @@
  */
 
 #include "FuncRedirect.hpp"
-#include <iostream>
 
 #if IS_POSIX
 #include "MemProtectPosix.hpp"
@@ -37,7 +36,7 @@
 
 namespace funcRedirect {
 
-FuncRedirect::FuncRedirect() {
+FuncRedirect::FuncRedirect(void *oldFN, void *dest) {
 #if IS_POSIX
   memPro = new MemProtectPosix();
 #endif
@@ -45,14 +44,16 @@ FuncRedirect::FuncRedirect() {
 #if IS_X86
   writer = new CodeWriterX86();
 #endif
+
+  redirect(oldFN, dest);
 }
 
 FuncRedirect::~FuncRedirect() {
-  if (writer)
-    delete writer;
-
   if (memPro)
     delete memPro;
+
+  if (writer)
+    delete writer;
 }
 
 void FuncRedirect::redirect(void *oldFN, void *dest) {

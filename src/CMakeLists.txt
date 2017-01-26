@@ -31,8 +31,10 @@ set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 
 set( FUNCREDIRECT_SRC
 
+   ${CMAKE_CURRENT_SOURCE_DIR}/CodeWriterBase.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/FuncRedirect.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/MemProtectBase.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Redirector.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/posix/MemProtectPosix.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/x86/CodeWriterX86.cpp
 )
@@ -42,6 +44,7 @@ set( FUNCREDIRECT_INC
    ${CMAKE_CURRENT_SOURCE_DIR}/CodeWriterBase.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/FuncRedirect.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/MemProtectBase.hpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Redirector.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/posix/MemProtectPosix.hpp
    ${CMAKE_CURRENT_SOURCE_DIR}/x86/CodeWriterX86.hpp
 )

@@ -29,6 +29,8 @@
 
 namespace funcRedirect {
 
+CodeWriterX86::~CodeWriterX86() {}
+
 size_t CodeWriterX86::calculateDistance(void *oldFN, void *dest) {
   return reinterpret_cast<std::size_t>(dest)    // destination
          - reinterpret_cast<std::size_t>(oldFN) // minus source
@@ -44,8 +46,8 @@ void CodeWriterX86::patchFunctionNormal(void *oldFN, void *dest) {
   std::size_t dist = calculateDistance(oldFN, dest);
 
   char *func = reinterpret_cast<char *>(oldFN);
-  // instruction: jmp 0x********;
-  func[0] = 0xE9; // jmp
+  // : jmp 0x********;
+  func[0] = static_cast<char>(0xE9); // jmp
   memcpy(func + 1, &dist, 4);
 }
 
@@ -57,15 +59,15 @@ void CodeWriterX86::patchFunctionLong(void *oldFN, void *dest) {
   // push (low 32bit)
   // mov [rsp + 4] (high 32bit)
   // ret
-  func[0] = 0x68; // push
+  func[0] = static_cast<char>(0x68); // push
   memcpy(func + 1, dist, 4);
   // C7442404 is prefix of: mov dword [rsp+4], *
-  func[5] = 0xC7;
-  func[6] = 0x44;
-  func[7] = 0x24;
-  func[8] = 0x04;
+  func[5] = static_cast<char>(0xC7);
+  func[6] = static_cast<char>(0x44);
+  func[7] = static_cast<char>(0x24);
+  func[8] = static_cast<char>(0x04);
   memcpy(func + 9, dist + 4, 4);
-  func[13] = 0xC3; // ret
+  func[13] = static_cast<char>(0xC3); // ret
 }
 
 void CodeWriterX86::patchFunction(void *oldFN, void *dest) {

@@ -36,13 +36,13 @@ class CodeWriterX86 : public CodeWriterBase {
   size_t calculateDistance(void *oldFN, void *dest);
   bool checkNeedLongJmp(void *oldFN, void *dest);
   void patchFunctionNormal(void *oldFN, void *dest);
-  void patchFunctionLong(void *oldFN, void* destination);
+  void patchFunctionLong(void *oldFN, void *destination);
 
   std::vector<char> backup;
 
  public:
-  CodeWriterX86()          = default;
-  virtual ~CodeWriterX86() = default;
+  CodeWriterX86() = default;
+  virtual ~CodeWriterX86();
 
   void *alignAddr(void *addr);
 
