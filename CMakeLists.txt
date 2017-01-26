@@ -108,14 +108,16 @@ add_compiler(
 
 find_package( Git REQUIRED )
 
-ExternalProject_Add( catch
-  PREFIX            ${CMAKE_BINARY_DIR}/catch
-  GIT_REPOSITORY    https://github.com/philsquared/Catch.git
-  UPDATE_COMMAND    ${GIT_EXECUTABLE} pull
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND     ""
-  INSTALL_COMMAND   ""
-)
+if( NOT DISABLE_TESTS )
+  ExternalProject_Add( catch
+    PREFIX            ${CMAKE_BINARY_DIR}/catch
+    GIT_REPOSITORY    https://github.com/philsquared/Catch.git
+    UPDATE_COMMAND    ${GIT_EXECUTABLE} pull
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND     ""
+    INSTALL_COMMAND   ""
+  )
+endif( NOT DISABLE_TESTS )
 
 ExternalProject_Get_Property( catch source_dir )
 set( CATCH_INCLUDE_DIR "${source_dir}/include" )
@@ -199,7 +201,7 @@ install(
 install( EXPORT ${PROJECT_NAME}Targets DESTINATION lib/cmake/${PROJECT_NAME} )
 
 install(
-  FILES "${EPL_VIZ_INCLUDES_DIR}/defines.hpp"
+  FILES "${INCLUDES_DIR}/defines.hpp"
   DESTINATION include/funcRedirect
 )
 

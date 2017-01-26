@@ -75,7 +75,7 @@ install(
   RUNTIME       DESTINATION bin
   LIBRARY       DESTINATION lib
   ARCHIVE       DESTINATION lib
-  PUBLIC_HEADER DESTINATION include/eplViz
+  PUBLIC_HEADER DESTINATION include/funcRedirect
 )
 
 
