@@ -42,6 +42,13 @@ bool CodeWriterX86::checkNeedLongJmp(void *oldFN, void *dest) {
   return dist > INT32_MAX && static_cast<int64_t>(dist) < (static_cast<int64_t>(INT32_MIN));
 }
 
+void CodeWriterX86::backup(void *oldFN, size_t len) {
+  backupFuncPTR = oldFN;
+  backupData.resize(len);
+
+  memcpy(backupData.data(), oldFN, len);
+}
+
 void CodeWriterX86::patchFunctionNormal(void *oldFN, void *dest) {
   std::size_t dist = calculateDistance(oldFN, dest);
 
@@ -72,9 +79,13 @@ void CodeWriterX86::patchFunctionLong(void *oldFN, void *dest) {
 
 void CodeWriterX86::patchFunction(void *oldFN, void *dest) {
   if (checkNeedLongJmp(oldFN, dest)) {
+    backup(oldFN, 14);
     patchFunctionLong(oldFN, dest);
   } else {
+    backup(oldFN, 5);
     patchFunctionNormal(oldFN, dest);
   }
 }
+
+void CodeWriterX86::undoChanges() { memcpy(backupFuncPTR, backupData.data(), backupData.size()); }
 }

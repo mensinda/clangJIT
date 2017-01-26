@@ -36,5 +36,6 @@ class CodeWriterBase {
   virtual ~CodeWriterBase();
 
   virtual void patchFunction(void *oldFN, void *dest) = 0;
+  virtual void undoChanges() = 0;
 };
 }

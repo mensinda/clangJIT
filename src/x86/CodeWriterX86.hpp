@@ -38,7 +38,10 @@ class CodeWriterX86 : public CodeWriterBase {
   void patchFunctionNormal(void *oldFN, void *dest);
   void patchFunctionLong(void *oldFN, void *destination);
 
-  std::vector<char> backup;
+  void backup(void *oldFN, size_t len);
+
+  std::vector<char> backupData;
+  void *            backupFuncPTR = nullptr;
 
  public:
   CodeWriterX86() = default;
@@ -47,5 +50,6 @@ class CodeWriterX86 : public CodeWriterBase {
   void *alignAddr(void *addr);
 
   void patchFunction(void *oldFN, void *dest) override;
+  void undoChanges() override;
 };
 }

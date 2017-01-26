@@ -49,6 +49,8 @@ FuncRedirect::FuncRedirect(void *oldFN, void *dest) {
 }
 
 FuncRedirect::~FuncRedirect() {
+  writer->undoChanges();
+
   if (memPro)
     delete memPro;
 

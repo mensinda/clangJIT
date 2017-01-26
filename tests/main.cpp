@@ -24,8 +24,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define CATCH_CONFIG_MAIN
+
 #include "Redirector.hpp"
-#include <iostream>
+#include <catch.hpp>
 
 using namespace funcRedirect;
 
@@ -34,25 +36,41 @@ int func4(int i);
 
 class AAA {
  public:
-  std::string func1(int i, std::string f) { return "FUNC1 " + f + std::to_string(i); }
-  std::string func2(int i, std::string f) { return "FUNC2 " + f + std::to_string(i + 100); }
+  std::string func1(int i, uint32_t f) { return "FUNC1 " + std::to_string(i) + " " + std::to_string(f); }
+};
+
+class BBB : public AAA {
+ public:
+  std::string func2(int i, uint32_t f) { return "FUNC2 " + std::to_string(i + 100) + " " + std::to_string(f - 5); }
 };
 
 int func3(int i) { return i; }
 int func4(int i) { return (-1) * i; }
 
-int main(int argc, char *argv[]) {
-  std::cout << "Hello World " << argc << " " << argv[0] << std::endl;
+TEST_CASE("std::to_string sanity check") {
+  REQUIRE(std::to_string(1) == "1");
+  REQUIRE(std::to_string(100) == "100");
+  REQUIRE(std::to_string(101) == "101");
+  REQUIRE(std::to_string(95) == "95");
+}
 
-  AAA        a;
-  Redirector r;
-  std::cout << a.func1(1, " normal ") << std::endl;
-  r.redirect(&AAA::func1, &AAA::func2);
-  std::cout << a.func1(1, " patched? ") << std::endl;
+TEST_CASE("Function redirection") {
+  AAA a;
+  BBB b;
 
-  std::cout << func3(100) << std::endl;
-  r.redirect(&func3, &func4);
-  std::cout << func3(100) << std::endl;
+  {
+    REQUIRE(a.func1(1, 100) == "FUNC1 1 100");
+    REQUIRE(func3(100) == 100);
 
-  return 0;
+    Redirector r;
+    r.redirect(&AAA::func1, &BBB::func2);
+    r.redirect(&func3, &func4);
+
+    REQUIRE(a.func1(1, 100) == "FUNC2 101 95");
+    REQUIRE(func3(100) == -100);
+  }
+
+  // Destroying r restores the function
+  REQUIRE(a.func1(1, 100) == "FUNC1 1 100");
+  REQUIRE(func3(100) == 100);
 }
