@@ -200,7 +200,7 @@ install( EXPORT ${PROJECT_NAME}Targets DESTINATION lib/cmake/${PROJECT_NAME} )
 
 install(
   FILES "${EPL_VIZ_INCLUDES_DIR}/defines.hpp"
-  DESTINATION include/eplViz
+  DESTINATION include/funcRedirect
 )
 
 generate_format_command( format 3.9.1 )
