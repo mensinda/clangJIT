@@ -63,7 +63,6 @@ print_version gcc
 print_version clang
 
 testExec lcov --directory . --zerocounters
-testExec ./checkFormat.sh --only-check
 testExec mkdir $BUILD_DIR
 testExec cd    $BUILD_DIR
 
@@ -79,7 +78,7 @@ testExec make check
 if [[ "$CXX" == "g++" ]]; then
   msg "Parsing coverage data"
   testExec lcov --directory . --capture --output-file coverage.info
-  testExec lcov --remove coverage.info '/usr/*' '*catch*.h*' 'tests/*' --output-file coverage.info
+  testExec lcov --remove coverage.info '/usr/*' '*catch*.h*' '*defines.hpp' 'tests/*' --output-file coverage.info
   testExec lcov --list coverage.info
   testExec cp coverage.info /
 else
