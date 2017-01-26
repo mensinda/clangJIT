@@ -117,10 +117,10 @@ if( NOT DISABLE_TESTS )
     BUILD_COMMAND     ""
     INSTALL_COMMAND   ""
   )
-endif( NOT DISABLE_TESTS )
 
-ExternalProject_Get_Property( catch source_dir )
-set( CATCH_INCLUDE_DIR "${source_dir}/include" )
+  ExternalProject_Get_Property( catch source_dir )
+  set( CATCH_INCLUDE_DIR "${source_dir}/include" )
+endif( NOT DISABLE_TESTS )
 
 ####################
 # Generate subdirs #
